@@ -1,0 +1,190 @@
+﻿
+                  <div class="row">
+                    <!-- NG MODAL DIALOG -->
+<div id="myModal" class="modal fade" *ngIf="samplemodal" style="width:30%;display: block; opacity: 1;margin-top:50px;margin-left:35%; ">
+    <div>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" (click)="ngModalClose()">&times;</button>
+                <h4 class="modal-title">{{modalTitle}}</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{PopupMessage}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"  (click)="ConfirmAction();ngModalClose()"> Yes</button>
+                <button type="button" class="btn btn-default"  (click)="ngModalClose()">No</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+                    <div class="col-md-12">
+                      <div class="row">
+           
+                           <div class=" col-md-4 cc-bottom-margin">
+                          <div>
+                            <input [disabled]="!Credentials" class="cc-inputtext ng-untouched ng-pristine ng-valid" name="SF ClientID" placeholder="SF ClientID"
+                            type="text" [(ngModel)]="Clientid" />
+                          </div>
+                        </div>
+                        <div class="col-md-4 cc-bottom-margin">
+                          <div>
+                            <input [disabled]="!Credentials" class="cc-inputtext ng-untouched ng-pristine ng-valid" name="SF Secret key" placeholder="SF Secret key"
+                            type="text" [(ngModel)]="Secret">
+                          </div>
+                        </div>
+                        <div class="col-md-2 cc-bottom-margin">
+                          <div>
+                            <button class="md-raised md-primary cc-round-corner-button" (click)=Connect() [disabled]="!Credentials" md-raised-button>
+                            <span class="md-button-wrapper">
+                            <img src="../../Image/cc-logo-dash.png" height="24px" width="24px" style="vertical-align:top;">
+                            <i class="fa fa-exchange"></i>
+                            <i class="fa fa-cloud" ></i>                                    
+                            </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6"> <span style="color:red;font-weight:bold;text-align:right" class="pull-right">{{InsertError}}</span>
+                          <span style="color:Green;font-weight:bold;text-align:right" class="pull-right">{{Message}}</span>
+                        </div>
+                      </div>
+                      <div *ngIf="showloading"> <i class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+                        <span class="sr-only">Loading...</span>Loading... 
+                      </div>
+                      <div *ngFor="#it of Loginjson">
+                        <div class="col-md-12" style="color:#880015; font-weight:bold; ">
+                        </div>
+                        <label class="cc-material-label">Mapping the question tags to salesforce fields (Customer data)</label>
+                        <p *ngIf="Initilalise(it)"></p>
+                        <div *ngIf="!Credentials" class="row">
+                          <div class="col-md-12" *ngIf="Qmapbackup">
+                            <div class="col-md-3">
+                              <br/>
+                              <select *ngIf!="Questions" [(ngModel)]="Tagdata" id="drpmain" class="form-control cc-select ">
+                              <option value="">--Select a question tag--</option>
+                              <option *ngFor="#opt of it.qids " value="{{opt.tag}}:{{opt.qid}}"> {{opt.tag}}</option>
+                              </select>
+                              <select *ngIf="Questions" [(ngModel)]="Tagdata" id="drpEdit" class="form-control cc-select ng-pristine ng-valid ng-touched">
+                              <option value="">--Select a question tag--</option>
+                              <option *ngFor="#opt of Questions " value="{{opt.tag}}:{{opt.qid}}"> {{opt.tag}}</option>
+                              </select>
+                            </div>
+                            <div class="col-md-3">
+                              <br/>
+                              <select [(ngModel)]="Field" class="form-control cc-select ng-pristine ng-valid ng-touched">
+                              <option value="">--Select a salesforce field--</option>
+                              <option *ngFor="#opt of it.caseFields "> {{opt}}</option>
+                              </select>
+                            </div>
+                            <div class="col-md-2">
+                              <br/>
+                              <!--<button class="md-primary md-raised cc-round-corner-button " md-raised-button="" (click)="AddMapping(Tagdata,Field,it.ccToken)">-->
+                              <i class="fa fa-map-marker fa-2x" style="color:#2196f3" title="Map tag to fields" (click)="AddMapping(Tagdata,Field,it.ccToken)"></i>
+                              <!--</button>-->
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                          </div>
+                          <div>&nbsp;</div>
+                          <div class="row" *ngIf="Qmapbackup">
+                            <br/>
+                            <div class="col-md-4">
+                              <!--<span class="pull-left" style="padding-top:6px"><b >Page Size:</b> </span>
+                              <div class="pull-left">
+                                <select [(ngModel)]="MapPagesize" class="form-control cc-select ng-pristine ng-valid ng-touched">
+                                <option selected>5</option>
+                                <option>10</option>
+                                <option>20</option>
+                                </select>
+                              </div>-->
+                            </div>
+                            <div class="col-md-4"><span class="pull-right">
+                              <input type="text" class="cc-inputtext ng-untouched ng-pristine ng-valid" name="Search" placeholder="Search" [(ngModel)]="searchMap" (change)="SearchMap()" /><i style="  position: relative;z-index: 1;left: -25px;top: 1px;color: #2196f3;cursor:pointer;width: 0;" class="fa fa-search"></i>
+                              </span>
+                            </div>
+                            <div class="col-md-4">&nbsp;</div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-8" *ngIf="Qmapbackup">
+                              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cc-common-table cc-padding cc-notification-table">
+                                <table class="table md-data-table" layout-fill="">
+                                  <thead>
+                                    <tr style="background-color:#F2F2F2;">
+                                      <th class="md-text-cell-SF" (click)="SortMap('Tag')" style="cursor:pointer">Question Tag</th>
+                                      <th class="md-text-cell-SF" (click)="SortMap('Field')" style="cursor:pointer">SF Field</th>
+                                      <th class="md-text-cell-SF" width="30%">Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody *ngFor="#map of Qmap">
+                                    <tr *ngIf="map.error==''" style="text-align:left;">
+                                      <td class="md-text-cell-SF"> <a title="{{map.tag}}">{{map.tag.slice(0,20)}}<span *ngIf="map.tag.length>20">...</span> </a></td>
+                                      <td class="md-text-cell-SF"> <a title="{{map.field}}">{{map.field.slice(0,25)}}<span *ngIf="map.field.length>25">...</span></a></td>
+                                      <td class="md-text-cell-SF">
+                                        <span>           
+                                        <span *ngIf="map.disabled!='True'"  style="color:blue; cursor:pointer;"  ><u *ngIf="map._id!=Edittag"   (click)="ShowinPopup(map,'Edit')"  > <a title="Click to Edit"><i class="fa fa-pencil" aria-hidden="true"></i></a></u>
+                                        <u *ngIf="map._id==Edittag"  title="Click to cancel" (click)="CancelEdit()"><a title="Click to Cancel"><i class="fa fa-times" aria-hidden="true"></i></a></u> </span>
+                                        <span *ngIf="map.disabled=='True'" style="color:Green;  cursor:pointer;" (click)="ShowinPopup(map,'Enable')" > <a  title="Click to Enable"><i class="fa fa-check" aria-hidden="true"></i></a></span>
+                                        <span *ngIf="map.disabled!='True'" style="color:Red;  cursor:pointer;" (click)="ShowinPopup(map,'Disable')" >  <a  title="Click to Disable"> <i class="fa fa-ban" aria-hidden="true"></i> </a> </span>
+                                        </span>
+                                      </td>
+                                    </tr>
+                                    <tr *ngIf="map.error!=''">
+                                      <p *ngIf="PrintInserterror(map,ActionPerformed)"></p>
+                                    </tr>
+                                  </tbody>
+                                  <tfoot>
+                                    <tr *ngIf="Qmap.length==0">
+                                      <td colspan="3">No data exist</td>
+                                    </tr>
+                                  </tfoot>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-12" *ngIf="Qmapbackup">
+                            <br>
+                            <div class="col-md-6">
+                              <!--<div class="row ng-pagination-custom">
+                                <div class="medium-8 medium-offset-2 columns">
+                                    <pagination-controls (pageChange)="pageindex = $event" #api>
+                                    </pagination-controls>
+                                </div>
+                                </div>-->
+                            </div>
+                            <div class="col-md-2">
+                              <!--<label class="cc-material-label"> 
+                              <span> Mappings {{(pageindex-1) * MapPagesize+1}} to <span *ngIf="Qmap.length>pageindex* MapPagesize">  {{pageindex* MapPagesize}} </span> <span *ngIf="Qmap.length<=pageindex* MapPagesize">  {{Qmap.length}} </span>  of {{Qmap.length}}</span>
+                              </label> -->
+                            </div>
+                            <div class="col-md-2"> &nbsp;</div>
+                          </div>
+                          <br/>
+                          <div>&nbsp;</div>
+                        </div>
+                        <div class="col-md-2"></div>
+                      </div>
+                    </div>
+                  </div>
+               
+      <span *ngIf="tokendetails">
+        <p *ngIf="CCAuthenticated(tokendetails)"></p>
+      </span>
+      <div class="col-md-1"></div>
+      <div class="col-md-11">
+        <p *ngIf="APIKey"></p>
+        <div *ngFor="#it of RefreshTokenDetails | async">
+          <div>
+            <p *ngIf="Initialise(it)"></p>
+          </div>
+          <div *ngIf="Htmldata">
+            <!--<p *ngIf="navigate(Htmldata)"></p>-->
+          </div>
+        </div>
+      </div>
+    
+
